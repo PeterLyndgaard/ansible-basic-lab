@@ -1,0 +1,29 @@
+---
+- name: Install httpd with task-level become
+  hosts: copenhagen
+
+  tasks:
+    - name: Install httpd package
+      ansible.builtin.package:
+        name: httpd
+        state: present
+      become: true
+
+    - name: Verify httpd is installed
+      ansible.builtin.command:
+        cmd: rpm -q httpd
+      register: httpd_check
+      changed_when: false
+
+    - name: Display httpd version
+      ansible.builtin.debug:
+        var: httpd_check.stdout
+
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+         manager: auto
+    - name: Display httpd version if installed
+      ansible.builtin.debug:
+         msg: "httpd version: {{ ansible_facts.packages['httpd'][0].version }}"
+      when: "'httpd' in ansible_facts.packages"
+

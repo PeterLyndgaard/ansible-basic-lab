@@ -1,0 +1,40 @@
+- name: Install webserver based on Distribution
+  hosts: copenhagen
+  gather_facts: true
+
+  tasks:
+    - name: Set Facts
+      ansible.builtin.set_fact:
+        package_name: apache2
+      when: ansible_facts['distribution'] == "Ubuntu"
+
+    - name: Set Facts
+      ansible.builtin.set_fact:
+        package_name: httpd
+      when: ansible_facts['distribution'] == "RedHat"
+
+    - name: Show Distribution
+      ansible.builtin.debug:
+        var: ansible_facts['distribution']
+
+    - name: Output packagename
+      ansible.builtin.debug:
+        msg: "Package_name: {{ package_name }}"
+
+    - name: Install httpd package
+      ansible.builtin.package:
+        name: httpd
+        state: present
+      become: true
+      when: package_name == "httpd"
+
+    - name: Install apache2 package
+      ansible.builtin.package:
+        name: apache2
+        state: present
+      become: true
+      when: package_name == "apache2"
+
+
+
+
