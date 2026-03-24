@@ -1,5 +1,5 @@
 - name: Configure Webserver
-  hosts: tag_solution_Work7
+  hosts: tag_solution_webserver_work7
   become: true
 
   tasks:
